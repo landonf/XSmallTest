@@ -68,7 +68,7 @@ static const int XSM_TEST_PARENT_RESERVED_ __attribute__((unused)) = __COUNTER__
 #define int_xsm_given_(description, tag) int_xsm_given__(description, tag)
 #define int_xsm_given__(__xsm_description, __xsm_tag) \
     /* Declare our test case's method IMP */ \
-    static void int_xsm_test_func_ ## __xsm_tag (id self, SEL _cmd, NSMutableSet *INT_XSM_TEST_TAGS); \
+    static void int_xsm_test_func_ ## __xsm_tag (XCTestCase *self, SEL _cmd, NSMutableSet *INT_XSM_TEST_TAGS); \
     \
     /* Record the section */ \
     int_xsm_write_section_record(XSM_SECTION_TYPE_TEST_CASE, XSM_CLAUSE_TYPE_GIVEN, __xsm_description, XSM_TEST_PARENT_TAG, __xsm_tag, &int_xsm_test_func_ ## __xsm_tag) \
@@ -80,7 +80,7 @@ static const int XSM_TEST_PARENT_RESERVED_ __attribute__((unused)) = __COUNTER__
     \
     /* Define the test case method IMP (sans body, which the user must provide. We provide 'self' and _cmd to support
     * Objective-C-based invocation from our custom XCTestCase */ \
-    static void int_xsm_test_func_ ## __xsm_tag (id self, SEL _cmd, NSMutableSet *INT_XSM_TEST_TAGS)
+    static void int_xsm_test_func_ ## __xsm_tag (XCTestCase *self, SEL _cmd, NSMutableSet *INT_XSM_TEST_TAGS)
 
 /**
  * Define a new test `when' clause with the given description. All tests must first be defined via xsm_given().
@@ -244,7 +244,7 @@ typedef struct int_xsm_translation_unit {
  * @param _cmd The selector allocated for this test function.
  * @param tags The section tags enabled for this test run.
  */
-typedef void (int_xsm_test_section_function_t)(id self, SEL _cmd, NSMutableSet *tags);
+typedef void (int_xsm_test_section_function_t)(XCTestCase *self, SEL _cmd, NSMutableSet *tags);
 
 /*
  * XSM test record. Test records are written to the __DATA,xsm_tests section when declared via the
@@ -301,11 +301,11 @@ static int_xsm_translation_unit int_xsm_local_translation_unit __attribute__((se
 /* Function foward-declarations */
 static inline BOOL int_xsm_sect_tag_check (NSMutableSet *tags, int expected, int parent);
 static inline id int_xsm_meth_impl_cls_defaultTestSuite (id self, SEL _cmd);
-static inline int_xsm_test_section_function_t *int_xsm_meth_impl_testEntry (id self, SEL _cmd);
-static inline void int_xsm_meth_impl_xsmTestSection (id self, SEL _cmd);
-static inline id int_xsm_meth_impl_name (id self, SEL _cmd);
+static inline int_xsm_test_section_function_t *int_xsm_meth_impl_testEntry (XCTestCase *self, SEL _cmd);
+static inline void int_xsm_meth_impl_xsmTestSection (XCTestCase *self, SEL _cmd);
+static inline id int_xsm_meth_impl_name (XCTestCase *self, SEL _cmd);
 
-static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(id self, SEL _cmd));
+static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(XCTestCase *self, SEL _cmd));
 static inline Class int_xsm_register_test_case_class (const char *description);
 
 /*
@@ -590,23 +590,23 @@ static inline BOOL int_xsm_sect_tag_check (NSMutableSet *tags, int expected, int
 
 /* Custom XCTestCase method implementations. These implementations simply return whatever values have been
  * associated with the receiving object, using the actual method function address as a key */
-static inline id int_xsm_meth_impl_name (id self, SEL _cmd) {
+static inline id int_xsm_meth_impl_name (XCTestCase *self, SEL _cmd) {
     return objc_getAssociatedObject(self, (const void *) &int_xsm_meth_impl_name);
 }
 static inline id int_xsm_meth_impl_cls_defaultTestSuite (id self, SEL _cmd) {
     return objc_getAssociatedObject(self, (const void *) &int_xsm_meth_impl_cls_defaultTestSuite);
 }
-static inline int_xsm_test_section_function_t *int_xsm_meth_impl_testEntry (id self, SEL _cmd) {
+static inline int_xsm_test_section_function_t *int_xsm_meth_impl_testEntry (XCTestCase *self, SEL _cmd) {
     return (int_xsm_test_section_function_t *) [(NSValue *) objc_getAssociatedObject(self, (const void *) &int_xsm_meth_impl_testEntry) pointerValue];
 }
-static inline void int_xsm_meth_impl_xsmTestSection (id self, SEL _cmd) {
+static inline void int_xsm_meth_impl_xsmTestSection (XCTestCase *self, SEL _cmd) {
     NSSet *tags = objc_getAssociatedObject(self, (const void *) &int_xsm_meth_impl_xsmTestSection);
     int_xsm_test_section_function_t *target = int_xsm_meth_impl_testEntry(self, _cmd);
     target(self, _cmd, [tags mutableCopy]);
 }
 
 /* Given a test case description and a target class, derive a unique selector selector from the camel cased description, and register it with the target class and imp. */
-static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(id self, SEL _cmd)) {
+static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(XCTestCase *self, SEL _cmd)) {
     /* Split the description into individual components */
     NSArray *components = [[NSString stringWithUTF8String: description] componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
