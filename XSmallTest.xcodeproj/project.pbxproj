@@ -53,6 +53,7 @@
 		05EB3DC219420BE900CF606A /* TestXSmallTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestXSmallTest-Info.plist"; sourceTree = "<group>"; };
 		05EB3DC319420BE900CF606A /* TestXSmallTest-Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestXSmallTest-Tests-Info.plist"; sourceTree = "<group>"; };
 		05EB3DC519420C5800CF606A /* XSmallTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XSmallTest.h; sourceTree = "<group>"; };
+		05EB3DC6194213DC00CF606A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +91,7 @@
 		05EB3D7519420AA600CF606A = {
 			isa = PBXGroup;
 			children = (
+				05EB3DC6194213DC00CF606A /* README.md */,
 				05EB3DC519420C5800CF606A /* XSmallTest.h */,
 				05EB3D8519420ACF00CF606A /* TestXSmallTest */,
 				05EB3D9C19420AF500CF606A /* TestXSmallTest (iOS) */,
