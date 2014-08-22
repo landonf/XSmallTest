@@ -679,7 +679,17 @@ static inline Class int_xsm_register_test_case_class (const char *description) {
     
     /* If the class name is already in use, loop until we've got a unique name */
     if (NSClassFromString(className) != nil) {
-        for (NSUInteger i = 0; i < NSUIntegerMax; i++) {
+        /* First, try appending 'Tests'; this handles the case where the tests have the same name as the class being tested. */
+        if (![className hasSuffix: @"Test"] && ![className hasSuffix: @"Tests"]) {
+            NSString *testClassName = [className stringByAppendingString: @"Tests"];
+            
+            if (NSClassFromString(testClassName) == nil) {
+                className = testClassName;
+            }
+        }
+        
+        /* Otherwise, try appending a unique number to the name */
+        for (NSUInteger i = 0; i < NSUIntegerMax && NSClassFromString(className) != nil; i++) {
             if (i == NSUIntegerMax) {
                 [NSException raise: NSInternalInconsistencyException format: @"Couldn't find a unique test name for %@. You must have an impressive number of tests.", className];
                 __builtin_trap();
