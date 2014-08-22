@@ -384,7 +384,7 @@ static inline void int_xsm_parse_test_records (void) {
         
         /* Re-order the section's according to their tag order; this corresponds to the order they were declared
          * in this translation unit. */
-        [tagOrder sortWithOptions: 0 usingComparator: ^NSComparisonResult(id obj1, id obj2) {
+        [tagOrder sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
             return [(NSNumber *)obj1 compare: obj2];
         }];
         
