@@ -605,32 +605,47 @@ static inline void int_xsm_meth_impl_xsmTestSection (XCTestCase *self, SEL _cmd)
     target(self, _cmd, [tags mutableCopy]);
 }
 
-/* Given a test case description and a target class, derive a unique selector selector from the camel cased description, and register it with the target class and imp. */
-static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(XCTestCase *self, SEL _cmd)) {
+/* Given a test case description, generate a valid Objective-C identifier. */
+static inline NSString *int_xsm_normalize_identifier (NSString *description) {
     /* Split the description into individual components */
-    NSArray *components = [[NSString stringWithUTF8String: description] componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-    /* Camel case the string, removing invalid characters */
+    NSArray *components = [description componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    /* Camel case any elements that contain only lowercase letters (otherwise, we assume the case is already correct), and remove
+     * any invalid characters that may not occur in an Objective-C identifier. */
     NSMutableArray *cleanedComponents = [NSMutableArray arrayWithCapacity: [components count]];
     NSCharacterSet *allowedChars = [NSCharacterSet characterSetWithCharactersInString: @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
     for (NSUInteger i = 0; i < [components count]; i++) {
         NSString *component = components[i];
         NSString *newComponent = [[component componentsSeparatedByCharactersInSet: [allowedChars invertedSet]] componentsJoinedByString: @""];
-        if (i == 0) {
-            newComponent = [newComponent lowercaseString];
-        } else {
+        
+        /* If the string is entirely lowercase, apply camel casing */
+        if ([[newComponent lowercaseString] isEqualToString: newComponent]) {
             newComponent = [newComponent capitalizedString];
         }
+
+        /* Add to the result array. */
         [cleanedComponents addObject: newComponent];
     }
     
-    /* Strip any leading numbers */
-    NSString *selectorName = [cleanedComponents componentsJoinedByString: @""];
+    /* Generate the identifier, stripping any leading numbers */
+    NSString *identifier = [cleanedComponents componentsJoinedByString: @""];
     {
-        NSRange range = [selectorName rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
+        NSRange range = [identifier rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
         if (range.location == 0)
-            selectorName = [selectorName substringFromIndex: range.length];
+            identifier = [identifier substringFromIndex: range.length];
     }
+    
+#ifdef INT_XSM_DEBUG
+    NSLog(@"Mapped '%@' to identifier '%@'", description, identifier);
+#endif
+
+    return identifier;
+}
+
+/* Given a test case description and a target class, derive a unique selector selector from the camel cased description, and register it with the target class and imp. */
+static inline SEL int_xsm_register_test_selector (Class cls, const char *description, void (*imp)(XCTestCase *self, SEL _cmd)) {
+    /* Generate a valid selector for the description */
+    NSString *selectorName = int_xsm_normalize_identifier([NSString stringWithUTF8String: description]);
     
     /* If the selector is already in use, loop until we have a unique name */
     while (class_getInstanceMethod(cls, NSSelectorFromString(selectorName)) != NULL) {
@@ -659,30 +674,10 @@ static inline SEL int_xsm_register_test_selector (Class cls, const char *descrip
 
 /* Register a new class, automatically selecting a valid and unique class name based on the given description. */
 static inline Class int_xsm_register_test_case_class (const char *description) {
-    NSCharacterSet *allowedChars = [NSCharacterSet characterSetWithCharactersInString: @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
+    /* Generate a valid class name from the description */
+    NSString *className = int_xsm_normalize_identifier([NSString stringWithUTF8String: description]);
     
-    /* Camel case the string, removing invalid characters */
-    NSArray *words = [[NSString stringWithUTF8String: description] componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSMutableString *className = [NSMutableString string];
-    for (NSUInteger i = 0; i < [words count]; i++) {
-        NSString *word = words[i];
-
-        /* Strip unsupported characters */
-        word = [[word componentsSeparatedByCharactersInSet: [allowedChars invertedSet]] componentsJoinedByString: @""];
-        
-        /* Apply casing */
-        word = [word capitalizedString];
-        [className appendString: word];
-    }
-
-    /* Strip any leading numbers */
-    if (className != nil) {
-        NSRange range = [className rangeOfCharacterFromSet: [NSCharacterSet decimalDigitCharacterSet]];
-        if (range.location == 0)
-            [className deleteCharactersInRange: range];;
-    }
-    
-    /* If the class names are already in use, loop until we've got a unique name */
+    /* If the class name is already in use, loop until we've got a unique name */
     if (NSClassFromString(className) != nil) {
         for (NSUInteger i = 0; i < NSUIntegerMax; i++) {
             if (i == NSUIntegerMax) {
