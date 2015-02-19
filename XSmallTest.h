@@ -329,7 +329,7 @@ static inline void int_xsm_parse_test_records (void) {
 #ifdef __LP64__
         xsm_sect.data = getsectiondata((const struct mach_header_64 *) dli.dli_fbase, XSM_SEG_NAME, XSM_SECT_NAME, &xsm_sect.size);
 #else
-        xsm_sect.data = getsectiondata((const struct mach_header_32 *) dli.dli_fbase, XSM_SEG_NAME, XSM_SECT_NAME, &xsm_sect.size);
+        xsm_sect.data = getsectiondata((const struct mach_header *) dli.dli_fbase, XSM_SEG_NAME, XSM_SECT_NAME, &xsm_sect.size);
 #endif
         
         /* This should never happen; our constructor is only called if at least a test case has been registered */
