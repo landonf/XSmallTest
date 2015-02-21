@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05614E741A99271100D62442 /* TestCPPXSmallTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05614E721A99271100D62442 /* TestCPPXSmallTest.cpp */; };
+		05614E751A994B1D00D62442 /* TestCPPXSmallTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05614E721A99271100D62442 /* TestCPPXSmallTest.cpp */; };
 		05EB3D8419420ACF00CF606A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05EB3D8319420ACF00CF606A /* XCTest.framework */; };
 		05EB3D8A19420ACF00CF606A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 05EB3D8819420ACF00CF606A /* InfoPlist.strings */; };
 		05EB3D8C19420ACF00CF606A /* TestXSmallTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 05EB3D8B19420ACF00CF606A /* TestXSmallTest.m */; };
@@ -34,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		05614E721A99271100D62442 /* TestCPPXSmallTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCPPXSmallTest.cpp; sourceTree = "<group>"; };
 		05EB3D8019420ACF00CF606A /* TestXSmallTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestXSmallTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		05EB3D8319420ACF00CF606A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		05EB3D8719420ACF00CF606A /* TestXSmallTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestXSmallTest-Info.plist"; sourceTree = "<group>"; };
@@ -125,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				05EB3D8B19420ACF00CF606A /* TestXSmallTest.m */,
+				05614E721A99271100D62442 /* TestCPPXSmallTest.cpp */,
 				05EB3D8619420ACF00CF606A /* Supporting Files */,
 			);
 			path = TestXSmallTest;
@@ -286,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				05EB3D8C19420ACF00CF606A /* TestXSmallTest.m in Sources */,
+				05614E751A994B1D00D62442 /* TestCPPXSmallTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05614E741A99271100D62442 /* TestCPPXSmallTest.cpp in Sources */,
 				05EB3DC419420C0D00CF606A /* TestXSmallTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -339,6 +345,9 @@
 		05EB3D7A19420AA600CF606A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-auto-import",
@@ -347,6 +356,9 @@
 					"-Wno-variadic-macros",
 					"-Wno-packed",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-old-style-cast",
+					"-Wno-c99-extensions",
 				);
 			};
 			name = Debug;
@@ -354,6 +366,9 @@
 		05EB3D7B19420AA600CF606A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-auto-import",
@@ -362,6 +377,9 @@
 					"-Wno-variadic-macros",
 					"-Wno-packed",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-old-style-cast",
+					"-Wno-c99-extensions",
 				);
 			};
 			name = Release;
@@ -370,8 +388,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -416,8 +432,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -655,6 +669,7 @@
 				05EB3D9019420ACF00CF606A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		05EB3DBC19420AF500CF606A /* Build configuration list for PBXNativeTarget "TestXSmallTest (iOS)" */ = {
 			isa = XCConfigurationList;
@@ -663,6 +678,7 @@
 				05EB3DBE19420AF500CF606A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		05EB3DBF19420AF500CF606A /* Build configuration list for PBXNativeTarget "TestXSmallTest (iOS) Tests" */ = {
 			isa = XCConfigurationList;
@@ -671,6 +687,7 @@
 				05EB3DC119420AF500CF606A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
