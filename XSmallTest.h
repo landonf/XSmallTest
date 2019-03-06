@@ -157,7 +157,7 @@ static const int XSM_TEST_PARENT_RESERVED_ __attribute__((unused)) = __COUNTER__
 struct int_xsm_sect_record_record_ ## __xsm_tag ## _t { \
     int_xsm_section_record record; \
     char description[sizeof(__xsm_description)]; \
-} __attribute__((packed)); \
+} __attribute__((packed, aligned)); \
 \
 static struct int_xsm_sect_record_record_ ## __xsm_tag ## _t int_xsm_sect_record_record_ ## __xsm_tag __attribute__((section(XSM_SEG_NAME "," XSM_SECT_NAME))) __attribute__((used)) = { \
     .record = { \
